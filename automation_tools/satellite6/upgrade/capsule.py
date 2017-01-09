@@ -10,10 +10,10 @@ from automation_tools.utils import distro_info, update_packages
 from fabric.api import env, execute, put, run
 from automation_tools.satellite6.upgrade.tasks import (
     create_rhevm_instance,
-    delete_rhevm_instance,
-    sync_capsule_repos_to_upgrade
+    delete_rhevm_instance
+    # sync_capsule_repos_to_upgrade
 )
-from automation_tools.satellite6.upgrade.tools import copy_ssh_key, reboot
+from automation_tools.satellite6.upgrade.tools import reboot
 if sys.version_info[0] is 2:
     from StringIO import StringIO  # (import-error) pylint:disable=F0401
 else:  # pylint:disable=F0401,E0611
@@ -60,8 +60,8 @@ def satellite6_capsule_setup(sat_host, os_version):
         cap_hosts = cap_hosts.split(',')
     else:
         cap_hosts = [cap_hosts]
-    copy_ssh_key(sat_host, cap_hosts)
-    execute(sync_capsule_repos_to_upgrade, cap_hosts, host=sat_host)
+    # copy_ssh_key(sat_host, cap_hosts)
+    # execute(sync_capsule_repos_to_upgrade, cap_hosts, host=sat_host)
     return cap_hosts
 
 
