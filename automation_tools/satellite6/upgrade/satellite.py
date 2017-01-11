@@ -86,6 +86,7 @@ def satellite6_upgrade():
     update_packages(quiet=True)
     # Rebooting the system to see possible errors
     if rhev_sat_host:
+        print 'I have entered into this reboot...'
         reboot(160)
     # Setting Satellite to_version Repos
     major_ver = distro_info()[1]
@@ -125,6 +126,7 @@ def satellite6_upgrade():
     # Rebooting the system again for possible errors
     # Only for RHEV based satellite and not for personal one
     if rhev_sat_host:
+        print 'I have entered into 2nd reboot ...'
         reboot(160)
         if to_version == '6.1':
             # Stop the service again which started in restart
@@ -203,13 +205,14 @@ def satellite6_zstream_upgrade():
     update_packages(quiet=False)
     print('YUM UPDATE finished at: {0}'.format(time.ctime()))
     # Rebooting the system to check the possible issues if kernal is updated
-    reboot(120)
-    if to_version == '6.1':
-        # Stop the service again which started in restart
-        # This step is not required with 6.2 upgrade as installer itself
-        # stop all the services before upgrade
-        run('katello-service stop')
-        run('service-wait mongod start')
+    if os.environ.get('RHEV_SAT_HOST'):
+        reboot(160)
+        if to_version == '6.1':
+            # Stop the service again which started in restart
+            # This step is not required with 6.2 upgrade as installer itself
+            # stop all the services before upgrade
+            run('katello-service stop')
+            run('service-wait mongod start')
     # Running Upgrade
     print('SATELLITE UPGRADE started at: {0}'.format(time.ctime()))
     if to_version == '6.1':

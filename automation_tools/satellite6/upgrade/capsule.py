@@ -186,21 +186,6 @@ def satellite6_capsule_zstream_upgrade():
     if os.environ.get('CAPSULE_URL'):
         disable_repos('rhel-{0}-server-satellite-capsule-{1}-rpms'.format(
             major_ver, from_version))
-        # This is a temporary workaround for BZ1372467
-        if bz_bug_is_open('1372467'):
-            print ('Applying Temporary fix for Bug 1372467....')
-            cap_repo = StringIO()
-            cap_repo.write('[cap6]\n')
-            cap_repo.write('name=Capsule 6\n')
-            cap_repo.write('baseurl={0}\n'.format(
-                os.environ.get('CAPSULE_URL')))
-            cap_repo.write('enabled=1\n')
-            cap_repo.write('gpgcheck=0\n')
-            put(local_path=cap_repo, remote_path='/etc/yum.repos.d/cap6.repo')
-            cap_repo.close()
-        else:
-            print ('ALERT!!!! The bug 1372467 is fixed! '
-                   'Please remove the workaroud from code!')
     # Check what repos are set
     run('yum repolist')
     if from_version == '6.1' and major_ver == '6':
