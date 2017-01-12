@@ -19,8 +19,8 @@ from automation_tools.satellite6.upgrade.client import (
 )
 from automation_tools.satellite6.upgrade.satellite import (
     satellite6_setup,
-    satellite6_upgrade,
-    satellite6_zstream_upgrade
+    satellite6_upgrade
+    # satellite6_zstream_upgrade
 )
 from automation_tools.satellite6.upgrade.tasks import (
     get_sat_version
@@ -174,7 +174,8 @@ def product_upgrade(product):
                     if not current_version == to_version:
                         execute(satellite6_upgrade, host=sat_host)
                 elif from_version == to_version:
-                    execute(satellite6_zstream_upgrade, host=sat_host)
+                    # execute(satellite6_zstream_upgrade, host=sat_host)
+                    pass
                 # Generate foreman debug on satellite after upgrade
                 execute(foreman_debug, 'satellite_{}'.format(sat_host),
                         host=sat_host)
@@ -186,6 +187,10 @@ def product_upgrade(product):
                                     execute(satellite6_capsule_upgrade,
                                             cap_host, host=cap_host)
                                 elif from_version == to_version:
+                                    raise ValueError(
+                                        'ERROR ! SEEDED by jyejare for his PR,'
+                                        ' update configuration of the job and '
+                                        'retrigger your job !')
                                     execute(satellite6_capsule_zstream_upgrade,
                                             host=cap_host)
                                 # Generate foreman debug on capsule postupgrade
