@@ -40,7 +40,7 @@ def check_necessary_env_variables_for_upgrade(product):
     """
     failure = []
     # The upgrade product
-    products = ['satellite', 'capsule', 'client']
+    products = ['satellite', 'capsule', 'client', 'longrun']
     if product not in products:
         failure.append('Product name should be one of {0}.'.format(
             ', '.join(products)))
@@ -72,9 +72,9 @@ def setup_products_for_upgrade(product, os_version):
     """
     sat_host = cap_hosts = clients6 = clients7 = None
     sat_host = satellite6_setup(os_version)
-    if product == 'capsule':
+    if product == 'capsule' or product == 'longrun':
         cap_hosts = satellite6_capsule_setup(sat_host, os_version)
-    if product == 'client':
+    if product == 'client' or product == 'longrun':
         clients6, clients7 = satellite6_client_setup()
     return sat_host, cap_hosts, clients6, clients7
 
@@ -82,10 +82,11 @@ def setup_products_for_upgrade(product, os_version):
 def product_upgrade(product):
     """Task which upgrades the product.
 
-    Product is satellite or capsule or client.
+    Product is satellite or capsule or client or longrun.
     If product is satellite then upgrade only satellite
     If product is capsule then upgrade satellite and capsule
     If product is client then upgrade satellite and client
+    If product is longrun then upgrade satellite, capsule and client
 
     :param string product: product name wanted to upgrade.
 
@@ -178,7 +179,7 @@ def product_upgrade(product):
                 # Generate foreman debug on satellite after upgrade
                 execute(foreman_debug, 'satellite_{}'.format(sat_host),
                         host=sat_host)
-                if product == 'capsule':
+                if product == 'capsule' or product == 'longrun':
                     for cap_host in cap_hosts:
                         try:
                             with LogAnalyzer(cap_host):
@@ -199,7 +200,7 @@ def product_upgrade(product):
                                 foreman_debug, 'capsule_{}'.format(cap_host),
                                 host=cap_host)
                             raise
-                if product == 'client':
+                if product == 'client' or product == 'longrun':
                     satellite6_client_upgrade('rhel6', clients6)
                     satellite6_client_upgrade('rhel7', clients7)
         except Exception:
