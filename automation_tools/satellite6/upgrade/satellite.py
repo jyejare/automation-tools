@@ -79,10 +79,6 @@ def satellite6_upgrade():
     to_version = os.environ.get('TO_VERSION')
     rhev_sat_host = os.environ.get('RHEV_SAT_HOST')
     base_url = os.environ.get('BASE_URL')
-    if to_version not in ['6.1', '6.2']:
-        logger.warning('Wrong Satellite Version Provided to upgrade to. '
-                       'Provide one of 6.1, 6.2')
-        sys.exit(1)
     # Setting yum stdout log level to be less verbose
     set_yum_debug_level()
     setup_satellite_firewall()
